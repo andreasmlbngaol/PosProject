@@ -51,6 +51,7 @@ fun PosProjectTheme(
     MaterialTheme(
         colors = colors,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }
