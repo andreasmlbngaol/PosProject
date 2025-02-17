@@ -22,6 +22,8 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation("moe.tlaster:precompose:1.6.2")
+    implementation("com.google.zxing:core:3.5.2")
+    implementation("org.bytedeco:opencv-platform:4.5.5-1.5.7")
 }
 
 compose.desktop {
