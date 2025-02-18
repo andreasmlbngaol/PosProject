@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.Camera
 import model.BaseViewModel
-import model.di.TestClass
+import di.TestClass
 
 class CashierViewModel(
     testClass: TestClass

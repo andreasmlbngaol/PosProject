@@ -1,4 +1,4 @@
-package features.auth.utils
+package model.utils
 
 import java.util.prefs.Preferences
 

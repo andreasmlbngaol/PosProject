@@ -15,7 +15,7 @@ import features.auth.views.AuthScreen
 import features.cashier.views.CashierScreen
 import features.home.views.HomeScreen
 import kotlinx.serialization.Serializable
-import model.di.initKoin
+import di.initKoin
 import org.koin.compose.KoinContext
 import ui.theme.PosProjectTheme
 

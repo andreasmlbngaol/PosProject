@@ -1,4 +1,4 @@
-package model.di
+package di
 
 import features.auth.views.AuthViewModel
 import features.cashier.views.CashierViewModel

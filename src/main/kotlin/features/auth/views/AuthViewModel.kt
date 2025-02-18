@@ -1,11 +1,11 @@
 package features.auth.views
 
-import features.auth.utils.PreferenceManager
+import model.utils.PreferenceManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
-import model.di.TestClass
+import di.TestClass
 
 class AuthViewModel(
     testClass: TestClass

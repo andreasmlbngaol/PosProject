@@ -20,7 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import features.auth.utils.PreferenceManager
+import model.utils.PreferenceManager
 
 @Composable
 fun AuthForm(

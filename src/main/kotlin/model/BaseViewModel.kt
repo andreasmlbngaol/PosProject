@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import model.di.TestClass
+import di.TestClass
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel(

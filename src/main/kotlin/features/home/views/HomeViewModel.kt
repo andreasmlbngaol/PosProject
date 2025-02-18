@@ -1,10 +1,10 @@
 package features.home.views
 
-import features.auth.utils.PreferenceManager
+import model.utils.PreferenceManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
-import model.di.TestClass
+import di.TestClass
 
 class HomeViewModel(
     testClass: TestClass
