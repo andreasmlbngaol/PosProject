@@ -7,91 +7,94 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import features.auth.views.AuthScreen
 import features.cashier.views.CashierScreen
 import features.home.views.HomeScreen
-import moe.tlaster.precompose.PreComposeApp
-import moe.tlaster.precompose.ProvidePreComposeLocals
-import moe.tlaster.precompose.navigation.NavHost
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.PopUpTo
-import moe.tlaster.precompose.navigation.rememberNavigator
+import kotlinx.serialization.Serializable
+import model.di.initKoin
+import org.koin.compose.KoinContext
 import ui.theme.PosProjectTheme
+
+@Serializable data object HomeRoute
+@Serializable data object AuthRoute
+@Serializable data object CashierRoute
+
+fun main() {
+    initKoin()
+
+    application {
+        val windowState = rememberWindowState(placement = WindowPlacement.Fullscreen)
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = windowState,
+            undecorated = true,
+            resizable = false
+        ) {
+            App(::exitApplication)
+        }
+    }
+}
 
 @Composable
 fun App(
     onExitApplication: () -> Unit
 ) {
-    PreComposeApp {
-        val navigator = rememberNavigator()
-        PosProjectTheme {
+    val navController = rememberNavController()
+    PosProjectTheme {
+        KoinContext {
             Surface(
                 color = MaterialTheme.colors.background,
                 modifier = Modifier.fillMaxSize()
             ) {
-                NavHost(
-                    navigator = navigator,
-                    initialRoute = "/auth"
-                ) {
-                    scene("/auth") {
-                        AuthScreen(
-                            onExitApplication = onExitApplication,
-                            onNavigateToHome = {
-                                navigator.navigate(
-                                    "/home",
-                                    options = NavOptions(
-                                        launchSingleTop = true,
-                                        popUpTo = PopUpTo(
-                                            route = "/auth",
-                                            inclusive = true
-                                        )
-                                    )
-                                )
-                            }
-                        )
-                    }
-                    scene("/home") {
-                        HomeScreen(
-                            onNavigateToAuth = {
-                                navigator.navigate(
-                                    "/auth",
-                                    options = NavOptions(
-                                        launchSingleTop = true,
-                                        popUpTo = PopUpTo(
-                                            route = "/auth",
-                                            inclusive = true
-                                        )
-                                    )
-                                )
-
-                            },
-                            onNavigateToCashier = { navigator.navigate("/cashier") },
-                            onExitApplication = onExitApplication
-                        )
-                    }
-
-                    scene("/cashier") {
-                        CashierScreen(
-                            onBack = { navigator.goBack() }
-                        )
-                    }
-                }
+                MainNavHost(navController, onExitApplication)
             }
         }
     }
 }
 
-fun main() = application {
-    val windowState = rememberWindowState(placement = WindowPlacement.Fullscreen)
-
-    Window(
-        onCloseRequest = ::exitApplication,
-        state = windowState,
-        undecorated = true,
-        resizable = false
+@Composable
+fun MainNavHost(
+    navController: NavHostController,
+    onExitApplication: () -> Unit
+) {
+    NavHost(
+        navController = navController,
+        startDestination = AuthRoute
     ) {
-        ProvidePreComposeLocals {
-            App(::exitApplication)
+        composable<AuthRoute> {
+            AuthScreen(
+                onExitApplication = onExitApplication,
+                onNavigateToHome = {
+                    navController.navigate(HomeRoute) {
+                        launchSingleTop = true
+                        popUpTo(AuthRoute) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<HomeRoute> {
+            HomeScreen(
+                onNavigateToAuth = {
+                    navController.navigate(AuthRoute) {
+                        launchSingleTop = true
+                        popUpTo(HomeRoute) { inclusive = true }
+                    }
+                },
+                onNavigateToCashier = { navController.navigate(CashierRoute) },
+                onExitApplication = onExitApplication
+            )
+        }
+
+        composable<CashierRoute> {
+            CashierScreen(
+                onBack = { navController.navigateUp() }
+            )
         }
     }
 }

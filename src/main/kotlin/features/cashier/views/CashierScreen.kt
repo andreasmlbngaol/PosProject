@@ -1,5 +1,6 @@
 package features.cashier.views
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,11 +16,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import features.auth.utils.PreferenceManager
 import features.cashier.components.CashierTopBar
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun CashierScreen(
     onBack: () -> Unit,
-    viewModel: CashierViewModel = CashierViewModel()
+    viewModel: CashierViewModel = koinViewModel<CashierViewModel>()
 ) {
     val code by viewModel.code.collectAsState()
 
@@ -34,7 +38,12 @@ fun CashierScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { CashierTopBar(onBack) }
+        topBar = {
+            CashierTopBar {
+                viewModel.stopCapture()
+                onBack()
+            }
+        }
     ) { contentPadding ->
         Row(
             modifier = Modifier
@@ -80,49 +89,58 @@ fun CashierScreen(
                         )
                     }
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        Text(
-                            text = "Pilih Kamera"
-                        )
-                        Row(
+                    AnimatedContent(availableCameras) { listCamera ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.large)
-                                .background(MaterialTheme.colors.secondary)
-                                .padding(vertical = 8.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
+                                .weight(1f)
                         ) {
-                            if(!viewModel.cameraOpened.collectAsState().value) {
-                                availableCameras.forEach {
-                                    Text(
-                                        text = "Kamera $it",
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .clickable {
-                                                viewModel.startCapture(it) {
-                                                    println("Kamera $it di pilih")
-                                                }
-                                            },
-                                        textAlign = TextAlign.Center,
-                                        color = MaterialTheme.colors.onSecondary
-                                    )
+                            if(listCamera.isEmpty()) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
                                 }
                             } else {
-                                Text(
-                                    text = "Tutup Kamera",
+                                Text(text = "Pilih Kamera")
+                                Row(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .clickable {
-                                            viewModel.stopCapture()
-                                        },
-                                    textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colors.onSecondary
-                                )
+                                        .clip(MaterialTheme.shapes.large)
+                                        .background(MaterialTheme.colors.secondary)
+                                        .padding(vertical = 8.dp)
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    if(!viewModel.cameraOpened.collectAsState().value) {
+                                        availableCameras.forEach {
+                                            Text(
+                                                text = "Kamera $it",
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .clickable {
+                                                        viewModel.startCapture(it) {
+                                                            println("Kamera $it di pilih")
+                                                        }
+                                                    },
+                                                textAlign = TextAlign.Center,
+                                                color = MaterialTheme.colors.onSecondary
+                                            )
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "Tutup Kamera",
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .clickable {
+                                                    viewModel.stopCapture()
+                                                },
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colors.onSecondary
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

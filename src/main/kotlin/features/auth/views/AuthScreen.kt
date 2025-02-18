@@ -13,12 +13,15 @@ import androidx.compose.ui.Modifier
 import features.auth.components.AuthTopBar
 import components.ExitDialog
 import features.auth.components.AuthForm
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun AuthScreen(
     onExitApplication: () -> Unit,
     onNavigateToHome: () -> Unit,
-    viewModel: AuthViewModel = AuthViewModel()
+    viewModel: AuthViewModel = koinViewModel<AuthViewModel>()
 ) {
     LaunchedEffect(Unit) {
         viewModel.checkLogin { onNavigateToHome() }

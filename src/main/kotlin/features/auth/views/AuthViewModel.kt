@@ -4,8 +4,12 @@ import features.auth.utils.PreferenceManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import model.BaseViewModel
+import model.di.TestClass
 
-class AuthViewModel {
+class AuthViewModel(
+    testClass: TestClass
+): BaseViewModel(testClass) {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 

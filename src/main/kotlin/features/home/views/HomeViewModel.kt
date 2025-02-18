@@ -3,8 +3,12 @@ package features.home.views
 import features.auth.utils.PreferenceManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import model.BaseViewModel
+import model.di.TestClass
 
-class HomeViewModel {
+class HomeViewModel(
+    testClass: TestClass
+): BaseViewModel(testClass) {
     private val _signOutDialogVisible = MutableStateFlow(false)
     val signOutDialogVisible = _signOutDialogVisible.asStateFlow()
 

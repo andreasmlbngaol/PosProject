@@ -3,9 +3,17 @@ package features.cashier.views
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.Camera
-import model.ViewModel
+import model.BaseViewModel
+import model.di.TestClass
 
-class CashierViewModel: ViewModel() {
+class CashierViewModel(
+    testClass: TestClass
+): BaseViewModel(testClass) {
+
+    init {
+        super.test()
+    }
+
     private val _code = MutableStateFlow("")
     val code = _code.asStateFlow()
 
