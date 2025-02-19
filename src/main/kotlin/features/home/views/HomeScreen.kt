@@ -26,6 +26,10 @@ fun HomeScreen(
     val signOutDialogVisible by viewModel.signOutDialogVisible.collectAsState()
     val exitDialogVisible by viewModel.exitDialogVisible.collectAsState()
 
+    // Test
+    val users by viewModel.users.collectAsState()
+    val hello by viewModel.hello.collectAsState()
+
     Scaffold(
         topBar = {
             HomeTopBar(
@@ -47,9 +51,13 @@ fun HomeScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                HomeMainButton("Stok"){ }
+                HomeMainButton("Stok"){
+                    println(users)
+                }
                 HomeMainButton("Kasir"){ onNavigateToCashier() }
-                HomeMainButton("Laporan"){ }
+                HomeMainButton("Laporan"){
+                    println(hello)
+                }
             }
             if(signOutDialogVisible) {
                 SignOutDialog(

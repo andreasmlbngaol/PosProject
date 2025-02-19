@@ -30,7 +30,7 @@ fun main() {
         val windowState = rememberWindowState(placement = WindowPlacement.Fullscreen)
 
         Window(
-            onCloseRequest = ::exitApplication,
+            onCloseRequest = { },
             state = windowState,
             undecorated = true,
             resizable = false
