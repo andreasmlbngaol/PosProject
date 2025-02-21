@@ -64,7 +64,7 @@ fun MainNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AuthRoute
+        startDestination = CashierRoute
     ) {
         composable<AuthRoute> {
             AuthScreen(
@@ -93,7 +93,8 @@ fun MainNavHost(
 
         composable<CashierRoute> {
             CashierScreen(
-                onBack = { navController.navigateUp() }
+//                onBack = { navController.navigateUp() }
+            onBack = onExitApplication
             )
         }
     }

@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
 import di.TestClass
 
-class AuthViewModel(
-    testClass: TestClass
-): BaseViewModel(testClass) {
+class AuthViewModel: BaseViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 

@@ -40,8 +40,8 @@ private val darkScheme = Colors(
 
 @Composable
 fun PosProjectTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-//    darkTheme: Boolean = false,
+//    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colors = when {

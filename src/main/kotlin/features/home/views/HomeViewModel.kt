@@ -8,9 +8,7 @@ import di.TestClass
 import model.User
 import services.ApiClient
 
-class HomeViewModel(
-    testClass: TestClass
-): BaseViewModel(testClass) {
+class HomeViewModel : BaseViewModel() {
     private val _signOutDialogVisible = MutableStateFlow(false)
     val signOutDialogVisible = _signOutDialogVisible.asStateFlow()
 

@@ -9,7 +9,7 @@ import di.TestClass
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel(
-    private val testClass: TestClass
+//    private val testClass: TestClass
 ): ViewModel() {
     fun launchScope(
         coroutineContext: CoroutineContext = Dispatchers.IO,
@@ -20,7 +20,7 @@ abstract class BaseViewModel(
         }
     }
 
-    fun test() {
-        println(testClass.helloWorld())
-    }
+//    fun test() {
+//        println(testClass.helloWorld())
+//    }
 }
