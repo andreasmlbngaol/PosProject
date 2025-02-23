@@ -1,13 +1,11 @@
 package features.cashier.views
 
-import di.TestClass
 import features.cashier.model.CartItem
-import features.cashier.model.ITEM_LIST
 import features.cashier.model.Item
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
+import services.ApiClient
 
 class CashierViewModel : BaseViewModel() {
 
@@ -26,17 +24,23 @@ class CashierViewModel : BaseViewModel() {
     private val _paid = MutableStateFlow("")
     val paid = _paid.asStateFlow()
 
-    private val _isPaidError = MutableStateFlow(false)
-    val isPaidError = _isPaidError.asStateFlow()
-
     private val _change = MutableStateFlow(0L)
     val change = _change.asStateFlow()
+
+    fun resetProperties() {
+        _code.value = ""
+        _name.value = ""
+        _price.value = 0f
+        _cartItems.value = emptyList()
+        _paid.value = ""
+        _change.value = 0L
+    }
 
     fun setCode(code: String) {
         _code.value = code
     }
 
-    fun setChange(total: Long) {
+    private fun setChange(total: Long) {
         try {
             _change.value = _paid.value.toLong() - total
         } catch (e: NumberFormatException) {
@@ -44,32 +48,27 @@ class CashierViewModel : BaseViewModel() {
         }
     }
 
-    fun setPaid(stringPaid: String) {
-        _paid.value = stringPaid
-        try {
-            _paid.value.toLong()
-            _isPaidError.value = false
-        } catch (e: NumberFormatException) {
-            _isPaidError.value = true
-        } finally {
-            if(_paid.value.isBlank()) {
-                _isPaidError.value = false
-            }
+    fun setPaid(stringPaid: String, total: Long) {
+        launchScope {
+            _paid.value = stringPaid.filter { it.isDigit() }
+            setChange(total)
         }
     }
 
     fun searchItem() {
-        ITEM_LIST.firstOrNull { it.code == _code.value }?.let { item ->
-            _name.value = item.name
-            _price.value = item.price
-            addItemToCart(item)
-        } ?: run {
-            _name.value = ""
-            _price.value = 0.0f
+        launchScope {
+            ApiClient.getItemByCode(_code.value.toInt())?.let { item ->
+                _name.value = item.name
+                _price.value = item.price
+                addItemToCart(item)
+            } ?: run {
+                _name.value = ""
+                _price.value = 0.0f
+            }
         }
     }
 
-    fun addItemToCart(newItem: Item) {
+    private fun addItemToCart(newItem: Item) {
         val currentList = _cartItems.value.toMutableList()
         val index = currentList.indexOfFirst { it.item.code == newItem.code }
 

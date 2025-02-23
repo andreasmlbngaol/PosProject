@@ -12,8 +12,12 @@ import components.ExitDialog
 import features.home.components.HomeMainButton
 import features.home.components.HomeTopBar
 import features.home.components.SignOutDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import services.ApiClient
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -25,10 +29,6 @@ fun HomeScreen(
 ) {
     val signOutDialogVisible by viewModel.signOutDialogVisible.collectAsState()
     val exitDialogVisible by viewModel.exitDialogVisible.collectAsState()
-
-    // Test
-    val users by viewModel.users.collectAsState()
-    val hello by viewModel.hello.collectAsState()
 
     Scaffold(
         topBar = {
@@ -52,11 +52,15 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 HomeMainButton("Stok"){
-                    println(users)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        println(ApiClient.getAllItems())
+                    }
                 }
                 HomeMainButton("Kasir"){ onNavigateToCashier() }
                 HomeMainButton("Laporan"){
-                    println(hello)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        println(ApiClient.getAllItems())
+                    }
                 }
             }
             if(signOutDialogVisible) {

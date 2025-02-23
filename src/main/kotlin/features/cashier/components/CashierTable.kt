@@ -1,9 +1,7 @@
 package features.cashier.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,13 +13,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import features.cashier.model.CartItem
 import func.formatted
+
 
 @Composable
 fun CashierTable(
@@ -67,7 +68,7 @@ fun CashierTable(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TableCell("${index + 1}")
-                    TableCell(cartItem.item.code)
+                    TableCell(cartItem.item.code.toString())
                     TableCell(cartItem.item.name)
                     TableCell(cartItem.item.price.formatted())
                     QuantityCell(cartItem, onQuantityChange)
@@ -103,30 +104,48 @@ fun RowScope.QuantityCell(
     onQuantityChange: (CartItem, Int) -> Unit
 ) {
     var isEditing by remember { mutableStateOf(false) }
-    var quantity by remember { mutableStateOf(cartItem.quantity.toString()) }
+    val placeholder by remember(cartItem.quantity) { mutableStateOf(cartItem.quantity.toString()) }
+    var quantity by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+
+    fun onFinishEditQuantity() {
+        isEditing = false
+        val newQuantity = quantity.toIntOrNull() ?: cartItem.quantity
+        onQuantityChange(cartItem, newQuantity)
+        quantity = ""
+    }
 
     if (isEditing) {
-        TextField(
+        OutlinedTextField(
             value = quantity,
+            placeholder = { Text(placeholder) },
             onValueChange = { newValue ->
                 quantity = newValue.filter { it.isDigit() } // Hanya angka
             },
             modifier = Modifier
                 .weight(1f)
-                .padding(8.dp),
+                .padding(8.dp)
+                .focusRequester(focusRequester)
+                .onPreviewKeyEvent { event ->
+                    if(event.type == KeyEventType.KeyDown && event.key == Key.Escape) {
+                        onFinishEditQuantity()
+                        true
+                    } else false
+                },
             singleLine = true,
             textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    isEditing = false
-                    val newQuantity = quantity.toIntOrNull() ?: cartItem.quantity
-                    onQuantityChange(cartItem, newQuantity)
-                }
+                onDone = { onFinishEditQuantity() }
             )
         )
+
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
     } else {
         TableCell(
             text = cartItem.quantity.toString(),
@@ -134,7 +153,7 @@ fun RowScope.QuantityCell(
             modifier = Modifier
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onDoubleTap = { isEditing = true }
+                        onTap = { isEditing = true }
                     )
                 }
         )
