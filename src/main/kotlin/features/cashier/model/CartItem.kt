@@ -1,7 +1,7 @@
 package features.cashier.model
 
 data class CartItem(
-    val item: Item,
+    val item: Stock,
     val quantity: Int
 ) {
     val totalPrice: Float

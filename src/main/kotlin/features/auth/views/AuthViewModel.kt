@@ -5,7 +5,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
-import di.TestClass
 
 class AuthViewModel: BaseViewModel() {
     private val _isLoading = MutableStateFlow(true)

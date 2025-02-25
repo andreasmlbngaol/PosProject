@@ -1,7 +1,7 @@
 package features.cashier.views
 
 import features.cashier.model.CartItem
-import features.cashier.model.Item
+import features.cashier.model.Stock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import model.BaseViewModel
@@ -55,28 +55,62 @@ class CashierViewModel : BaseViewModel() {
         }
     }
 
-    fun searchItem() {
+    @Suppress("UNUSED")
+    private fun getIemById(onGetItem: (Stock?) -> Unit) {
         launchScope {
-            ApiClient.getItemByCode(_code.value.toInt())?.let { item ->
-                _name.value = item.name
-                _price.value = item.price
-                addItemToCart(item)
-            } ?: run {
-                _name.value = ""
-                _price.value = 0.0f
-            }
+            val id = _code.value.toInt()
+            onGetItem(ApiClient.getItemById(id))
         }
     }
 
-    private fun addItemToCart(newItem: Item) {
+    private fun getItemByCode(onGetItem: (Stock?) -> Unit) {
+        launchScope {
+            onGetItem(ApiClient.getItemByCode(_code.value))
+        }
+    }
+
+    fun searchItem() {
+        launchScope {
+            getItemByCode { item ->
+                item?.let {
+                    _name.value = it.name
+                    _price.value = it.price
+                    addItemToCart(it)
+                } ?: run {
+                    _name.value = ""
+                    _price.value = 0f
+                }
+            }
+//            getIemById { item ->
+//                item?.let {
+//                    _name.value = it.name
+//                    _price.value = it.price
+//                    addItemToCart(it)
+//                } ?: run {
+//                    _name.value = ""
+//                    _price.value = 0f
+//                }
+//            }
+//            ApiClient.getItemById(_code.value.toInt())?.let { item ->
+//                _name.value = item.name
+//                _price.value = item.price
+//                addItemToCart(item)
+//            } ?: run {
+//                _name.value = ""
+//                _price.value = 0.0f
+//            }
+        }
+    }
+
+    private fun addItemToCart(newStock: Stock) {
         val currentList = _cartItems.value.toMutableList()
-        val index = currentList.indexOfFirst { it.item.code == newItem.code }
+        val index = currentList.indexOfFirst { it.item.id == newStock.id }
 
         if (index != -1) {
             val item = currentList[index]
             currentList[index] = item.copy(quantity = item.quantity + 1)
         } else {
-            currentList.add(CartItem(newItem, 1))
+            currentList.add(CartItem(newStock, 1))
         }
 
         _cartItems.value = currentList // Perubahan state dipicu di sini
