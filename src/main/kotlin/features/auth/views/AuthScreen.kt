@@ -38,7 +38,15 @@ fun AuthScreen(
             modifier = Modifier.fillMaxSize().padding(contentPadding),
             contentAlignment = Alignment.Center
         ) {
-            AuthForm { onNavigateToHome() }
+            AuthForm { uid, pin, onFailure ->
+                viewModel.login(
+                    uid = uid,
+                    pin = pin,
+                    onSuccess = { onNavigateToHome() },
+                    onFailure = onFailure
+                )
+            }
+
             if(closeDialogVisible) {
                 ExitDialog(
                     onDismissRequest = { closeDialogVisible = false },

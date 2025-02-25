@@ -55,7 +55,6 @@ class CashierViewModel : BaseViewModel() {
         }
     }
 
-    @Suppress("UNUSED")
     private fun getIemById(onGetItem: (Stock?) -> Unit) {
         launchScope {
             val id = _code.value.toInt()
@@ -63,6 +62,7 @@ class CashierViewModel : BaseViewModel() {
         }
     }
 
+    @Suppress("UNUSED")
     private fun getItemByCode(onGetItem: (Stock?) -> Unit) {
         launchScope {
             onGetItem(ApiClient.getItemByCode(_code.value))
@@ -71,17 +71,7 @@ class CashierViewModel : BaseViewModel() {
 
     fun searchItem() {
         launchScope {
-            getItemByCode { item ->
-                item?.let {
-                    _name.value = it.name
-                    _price.value = it.price
-                    addItemToCart(it)
-                } ?: run {
-                    _name.value = ""
-                    _price.value = 0f
-                }
-            }
-//            getIemById { item ->
+//            getItemByCode { item ->
 //                item?.let {
 //                    _name.value = it.name
 //                    _price.value = it.price
@@ -91,6 +81,16 @@ class CashierViewModel : BaseViewModel() {
 //                    _price.value = 0f
 //                }
 //            }
+            getIemById { item ->
+                item?.let {
+                    _name.value = it.name
+                    _price.value = it.price
+                    addItemToCart(it)
+                } ?: run {
+                    _name.value = ""
+                    _price.value = 0f
+                }
+            }
 //            ApiClient.getItemById(_code.value.toInt())?.let { item ->
 //                _name.value = item.name
 //                _price.value = item.price

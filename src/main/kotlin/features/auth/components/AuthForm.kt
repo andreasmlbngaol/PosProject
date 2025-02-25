@@ -20,11 +20,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import model.utils.PreferenceManager
 
 @Composable
 fun AuthForm(
-    onLoginSuccess: () -> Unit
+    onLogin: (
+        uid: String,
+        pin: String,
+        onFailure: () -> Unit
+    ) -> Unit
 ) {
     var id by remember { mutableStateOf("") }
     var pin by remember { mutableStateOf("") }
@@ -81,7 +84,7 @@ fun AuthForm(
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        login(id, pin, onLoginSuccess) {
+                        onLogin(id, pin) {
                             errorMessageVisible = true
                             focusManager.clearFocus()
                         }
@@ -106,7 +109,7 @@ fun AuthForm(
 
             Button(
                 onClick = {
-                    login(id, pin, onLoginSuccess) {
+                    onLogin(id, pin) {
                         errorMessageVisible = true
                         focusManager.clearFocus()
                     }
@@ -116,19 +119,5 @@ fun AuthForm(
             }
 
         }
-    }
-}
-
-fun login(
-    id: String,
-    pin: String,
-    onSuccess: () -> Unit,
-    onFailure: () -> Unit
-) {
-    if(id == "root" && pin == "123") {
-        PreferenceManager.saveLogin(id)
-        onSuccess()
-    } else {
-        onFailure()
     }
 }

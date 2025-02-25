@@ -59,7 +59,7 @@ fun HomeScreen(
                 HomeMainButton("Kasir"){ onNavigateToCashier() }
                 HomeMainButton("Laporan"){
                     CoroutineScope(Dispatchers.IO).launch {
-                        println(ApiClient.getAllItems())
+                        println(ApiClient.getAllUsers())
                     }
                 }
             }

@@ -24,6 +24,7 @@ import ui.theme.PosProjectTheme
 @Serializable data object CashierRoute
 
 fun main() {
+
     initKoin()
 
     application {

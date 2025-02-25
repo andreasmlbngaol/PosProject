@@ -45,12 +45,16 @@ dependencies {
     implementation("io.insert-koin:koin-compose-viewmodel:1.2.0-Beta4")
 
     // Ktor
-    implementation("io.ktor:ktor-client-core:2.3.8")
+    implementation("io.ktor:ktor-client-core:2.3.13")
     implementation("io.ktor:ktor-client-cio:2.3.8") // Bisa pakai CIO, OkHttp, atau lainnya
     implementation("io.ktor:ktor-client-logging:2.3.8") // Untuk logging request/response
     implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8") // Agar bisa handle JSON
     implementation("org.slf4j:slf4j-simple:2.0.9")
+
+    // Bcrypt
+    implementation("at.favre.lib:bcrypt:0.10.2")
+
 
 }
 
